@@ -1,0 +1,138 @@
+{% sw_extends '@Storefront/storefront/component/payment/payment-fields.html.twig' %}
+
+{% block component_payment_methods %}
+
+    {# Set defaultPaymentMethodId #}
+    {% if activeRoute == 'frontend.checkout.confirm.page' %}
+      {% set defaultPaymentMethodId = context.paymentMethod.id %}
+    {% endif %}
+
+    {% if activeRoute == 'frontend.account.payment.page' %}
+      {% set defaultPaymentMethodId = context.customer.defaultPaymentMethodId %}
+    {% endif %}
+
+    <div class="payment-methods">
+
+        {% for payment in page.paymentMethods %}
+
+            {# @deprecated tag:v6.4.0.0 moved to new component/payment/payment-method.html.twig #}
+            {% block component_payment_method %}
+                <div class="payment-method">
+
+                    {% block component_payment_method_field %}
+                        <div class="payment-form-group form-group">
+                            {% block component_payment_method_control %}
+                                <div class="custom-control custom-radio payment-control">
+                                    {% block component_payment_method_input %}
+                                        <input type="radio"
+                                               id="paymentMethod{{ loop.index }}"
+                                               name="paymentMethodId"
+                                               value="{{ payment.id }}"
+                                               {% if payment.id is same as(defaultPaymentMethodId) %}checked="checked"{% endif %}
+                                               class="custom-control-input payment-method-input">
+                                    {% endblock %}
+
+                                    {% block component_payment_method_label %}
+                                        <label class="custom-control-label payment-method-label"
+                                               for="paymentMethod{{ loop.index }}">
+                                            {% block component_payment_method_image %}
+                                                {% if payment.media %}
+                                                    {% sw_thumbnails 'payment-method-image-thumbnails' with {
+                                                        media: payment.media,
+                                                        sizes: {
+                                                            'default': '100px'
+                                                        },
+                                                        attributes: {
+                                                            'class': 'payment-method-image',
+                                                            'alt': (payment.media.translated.alt ?: payment.translated.name),
+                                                            'title': (payment.media.translated.title ?: payment.translated.name)
+                                                        }
+                                                    } %}
+                                                {% endif %}
+                                            {% endblock %}
+
+                                            {% block component_payment_method_description %}
+
+                                                <div class="payment-method-description">
+                                                    <strong>{{ payment.translated.name }}</strong>
+                                                    {% if payment.translated.description %}
+                                                        <p>{{ payment.translated.description|raw }}</p>
+                                                    {% endif %}
+                                                </div>
+
+                                            {% endblock %}
+                                        </label>
+
+                                        {% if payment.id == '1ba23be356fe430eba76906f3c5b6861' %}
+                                          {% if payment.id is same as(defaultPaymentMethodId) %}
+
+                                            <input {% if activeRoute == 'frontend.checkout.confirm.page' %}form="confirmOrderForm"{% endif %}
+                                            name="sepa_store" value="1" type="hidden">
+
+                                            <div class="form-row">
+                                              <div class="form-group col-sm-6">
+                                                <label class="form-label" for="steampixel_sepa_owner_input">
+                                                  Kontoinhaber{% if activeRoute == 'frontend.checkout.confirm.page' %}*{% endif %}
+                                                </label>
+                                                <input {% if activeRoute == 'frontend.checkout.confirm.page' %}form="confirmOrderForm"{% endif %}
+                                                name="sepa_owner"
+                                                type="text"
+                                                class="form-control"
+                                                id="steampixel_sepa_owner_input"
+                                                placeholder="Name Nachname"
+                                                value="{{ context.customer.customFields.custom_customer_sepa_owner }}"
+                                                {% if activeRoute == 'frontend.checkout.confirm.page' %}required="required"{% endif %}
+                                                >
+                                              </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                              <div class="form-group col-sm-6">
+                                                <label class="form-label" for="steampixel_sepa_iban_input">
+                                                  IBAN{% if activeRoute == 'frontend.checkout.confirm.page' %}*{% endif %}
+                                                </label>
+                                                <input {% if activeRoute == 'frontend.checkout.confirm.page' %}form="confirmOrderForm"{% endif %}
+                                                name="sepa_iban"
+                                                type="text"
+                                                class="form-control"
+                                                id="steampixel_sepa_iban_input"
+                                                placeholder="DE123456789123456789"
+                                                value="{{ context.customer.customFields.custom_customer_sepa_iban }}"
+                                                {% if activeRoute == 'frontend.checkout.confirm.page' %}required="required"{% endif %}
+                                                >
+                                              </div>
+                                            </div>
+
+                                            <div class="form-row">
+                                              <div class="form-group col-sm-6">
+                                                <label class="form-label" for="steampixel_sepa_bic_input">
+                                                  BIC / SWIFT{% if activeRoute == 'frontend.checkout.confirm.page' %}*{% endif %}
+                                                </label>
+                                                <input {% if activeRoute == 'frontend.checkout.confirm.page' %}form="confirmOrderForm"{% endif %}
+                                                name="sepa_bic"
+                                                type="text"
+                                                class="form-control"
+                                                id="steampixel_sepa_bic_input"
+                                                placeholder="HELODEC123456789"
+                                                value="{{ context.customer.customFields.custom_customer_sepa_bic }}"
+                                                {% if activeRoute == 'frontend.checkout.confirm.page' %}required="required"{% endif %}
+                                                >
+                                              </div>
+                                            </div>
+
+                                          {% endif %}
+                                        {% endif %}
+
+                                    {% endblock %}
+
+                                </div>
+                            {% endblock %}
+                        </div>
+                    {% endblock %}
+
+                    {% block component_payment_fieldset_template %}{% endblock %}
+                </div>
+            {% endblock %}
+        {% endfor %}
+    </div>
+{% endblock %}
