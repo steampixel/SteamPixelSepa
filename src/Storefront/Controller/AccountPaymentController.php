@@ -11,86 +11,58 @@ namespace SteamPixelSepa\Sepa\Storefront\Controller;
 
 // Use this shopware classes
 use Shopware\Storefront\Controller\StorefrontController;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
 use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Checkout\Customer\SalesChannel\AbstractChangePaymentMethodRoute;
 use Shopware\Core\Checkout\Payment\Exception\UnknownPaymentMethodException;
-use Shopware\Core\Framework\Routing\Annotation\LoginRequired;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
-use Shopware\Core\Framework\Routing\Annotation\Since;
+use Shopware\Core\Checkout\Payment\PaymentException;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Exception\InvalidUuidException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedHook;
 use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoader;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
-/**
- * @RouteScope(scopes={"storefront"})
- */
+
+#[Route(defaults: ['_routeScope' => ['storefront']])]
+#[Package('storefront')]
 class AccountPaymentController extends StorefrontController
 {
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $customerRepository;
-
-    /**
-     * @var AccountPaymentMethodPageLoader
-     */
-    private $paymentMethodPageLoader;
-
-    /**
-     * @var AbstractChangePaymentMethodRoute
-     */
-    private $changePaymentMethodRoute;
-
     public function __construct(
-        EntityRepositoryInterface $customerRepository,
-        AccountPaymentMethodPageLoader $paymentMethodPageLoader,
-        AbstractChangePaymentMethodRoute $changePaymentMethodRoute
+        private readonly EntityRepository $customerRepository,
+        private readonly AccountPaymentMethodPageLoader $paymentMethodPageLoader,
+        private readonly AbstractChangePaymentMethodRoute $changePaymentMethodRoute
     ) {
-
-        // Add the customer repository
-        // Do not forget to inject it through the services.xml
-        $this->customerRepository = $customerRepository;
-
-        $this->paymentMethodPageLoader = $paymentMethodPageLoader;
-        $this->changePaymentMethodRoute = $changePaymentMethodRoute;
     }
 
-    /**
-     * @Since("6.0.0.0")
-     * @LoginRequired()
-     * @Route("/account/payment", name="frontend.account.payment.save", methods={"POST"})
-     *
-     * @throws CustomerNotLoggedInException
-     */
+
+    #[Route(path: '/account/payment', name: 'frontend.account.payment.save', defaults: ['_loginRequired' => true], methods: ['POST'])]
     public function savePayment(RequestDataBag $requestDataBag, SalesChannelContext $context, ?CustomerEntity $customer = null): Response
     {
 
         try {
             $paymentMethodId = $requestDataBag->getAlnum('paymentMethodId');
 
-            /* @deprecated tag:v6.4.0 - Parameter $customer will be mandatory when using with @LoginRequired() */
             $this->changePaymentMethodRoute->change(
                 $paymentMethodId,
                 $requestDataBag,
                 $context,
                 $customer
             );
-        } catch (UnknownPaymentMethodException | InvalidUuidException $exception) {
-            $this->addFlash('danger', $this->trans('error.' . $exception->getErrorCode()));
+        } catch (InvalidUuidException|PaymentException $exception) {
+            $this->addFlash(self::DANGER, $this->trans('error.' . $exception->getErrorCode()));
 
             return $this->forwardToRoute('frontend.account.payment.page', ['success' => false]);
         }
 
-        $this->addFlash('success', $this->trans('account.paymentSuccess'));
+        $this->addFlash(self::SUCCESS, $this->trans('account.paymentSuccess'));
 
         // Write the SEPA data to the customer entity
 

@@ -1,0 +1,16 @@
+{
+    "SteamPixelSepa":{
+        "fullName":{
+            "label":"Voller Name",
+            "placeholder":"Voller Name"
+        },
+        "iban":{
+            "label":"IBAN",
+            "placeholder":"DE123456789123456789"
+        },
+        "bic":{
+            "label":"BIC / SWIFT",
+            "placeholder":"HELODEC123456789"
+        }
+    }
+}
