@@ -2,8 +2,8 @@
 This plugin provides a simple way to collect SEPA payment information. It will inject SEPA form fields into the chekout process and into the customer backend section. It will store the SEPA information to each order and will also store the information directly to the customer account. The user can change the information inside the user section. This plugin comes with the AGPLv3 license.
 
 
-<img src="./_preview/zLUsuYOVA3.jpg" width="413"><img src="./_preview/sacQPvdT5d.jpg" width="413">
-<img src="./_preview/52w429cYIb.jpg" width="413">
+<img src="./_preview/zLUsuYOVA3.png" width="413"><img src="./_preview/sacQPvdT5d.png" width="413">
+<img src="./_preview/52w429cYIb.png" width="413">
 
 ## Requirements and installation
 
