@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
+
+    <card>
+    <title>SteamPixelSepa configuration</title>
+
+    <component name="sw-entity-single-select">
+        <name>paymentId</name>
+        <entity>payment_method</entity>
+        <label>Select payment methods</label>
+        <label lang="en-GB">Select payment methods</label>
+        <label lang="de-DE">Zahlungsmethoden auswählen</label>
+        <helpText>This will enable the custom fields for this payment method in the frontend</helpText>
+        <helpText lang="en-GB">This will enable the custom fields for this payment method in the frontend</helpText>
+        <helpText lang="de-DE">Dies aktiviert die benutzerdefinierten Felder für diese Zahlungsmethode im Frontend</helpText>
+    </component>
+
+
+
+    </card>
+
+</config>

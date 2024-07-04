@@ -1,0 +1,65 @@
+{% sw_extends '@Storefront/storefront/component/payment/payment-method.html.twig' %}
+
+
+ {% block component_payment_method_label %}
+    {{ parent() }}
+
+    {% if payment.id == config('Sepa.config.paymentId') && selectedPaymentMethodId == config('Sepa.config.paymentId') %}
+
+        <input {% if activeRoute == 'frontend.checkout.confirm.page' %}form="confirmOrderForm"{% endif %}
+        name="sepa_store" value="1" type="hidden">
+
+        <div class="form-row">
+            <div class="form-group ">
+            <label class="form-label" for="steampixel_sepa_owner_input">
+                {{ "SteamPixelSepa.fullName.label"|trans }}
+            </label>
+            <input {% if activeRoute == 'frontend.checkout.confirm.page' %}form="confirmOrderForm"{% endif %}
+            name="sepa_owner"
+            type="text"
+            class="form-control"
+            id="steampixel_sepa_owner_input"
+            placeholder="{{ "SteamPixelSepa.fullName.placeholder"|trans }}"
+            value="{{ context.customer.customFields.custom_customer_sepa_owner }}"
+            {% if activeRoute == 'frontend.checkout.confirm.page' %}required="required"{% endif %}
+            >
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group ">
+            <label class="form-label" for="steampixel_sepa_iban_input">
+                {{ "SteamPixelSepa.iban.label"|trans }}{% if activeRoute == 'frontend.checkout.confirm.page' %}*{% endif %}
+            </label>
+            <input {% if activeRoute == 'frontend.checkout.confirm.page' %}form="confirmOrderForm"{% endif %}
+            name="sepa_iban"
+            type="text"
+            class="form-control"
+            id="steampixel_sepa_iban_input"
+            placeholder="{{ "SteamPixelSepa.iban.placeholder" |trans }}"
+            value="{{ context.customer.customFields.custom_customer_sepa_iban }}"
+            {% if activeRoute == 'frontend.checkout.confirm.page' %}required="required"{% endif %}
+            >
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group ">
+            <label class="form-label" for="steampixel_sepa_bic_input">
+                {{ "SteamPixelSepa.bic.label"|trans }}{% if activeRoute == 'frontend.checkout.confirm.page' %}*{% endif %}
+            </label>
+            <input {% if activeRoute == 'frontend.checkout.confirm.page' %}form="confirmOrderForm"{% endif %}
+            name="sepa_bic"
+            type="text"
+            class="form-control"
+            id="steampixel_sepa_bic_input"
+            placeholder=" {{ "SteamPixelSepa.bic.placeholder"|trans }}"
+            value="{{ context.customer.customFields.custom_customer_sepa_bic }}"
+            {% if activeRoute == 'frontend.checkout.confirm.page' %}required="required"{% endif %}
+            >
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}

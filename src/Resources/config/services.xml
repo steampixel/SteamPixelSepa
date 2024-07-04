@@ -6,25 +6,23 @@
 
     <services>
 
+        <service id="SteamPixelSepa\Sepa\Service\CustomFieldsInstaller">
+            <argument type="service" id="custom_field_set.repository"/>
+            <argument type="service" id="custom_field_set_relation.repository"/>
+        </service>
+
       <service id="SteamPixelSepa\Sepa\Subscriber\OrderSubscriber">
           <argument type="service" id="customer.repository"/>
           <tag name="kernel.event_subscriber"/>
       </service>
 
       <service id="SteamPixelSepa\Sepa\Storefront\Controller\AccountPaymentController" public="true">
-
             <argument type="service" id="customer.repository"/>
-
             <argument type="service" id="Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoader"/>
-
             <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\ChangePaymentMethodRoute"/>
-
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
-
         </service>
-
     </services>
-
 </container>

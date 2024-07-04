@@ -1,7 +1,7 @@
 {
     "name": "steampixel/sepa",
     "description": "Store SEPA data",
-    "version": "v1.0.0",
+    "version": "v1.0.3",
     "type": "shopware-platform-plugin",
     "license": "MIT",
     "authors": [
@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "shopware/core": "^6.3.0"
+        "shopware/core": "^6.6"
     },
     "autoload": {
         "psr-4": {
@@ -20,6 +20,7 @@
     "extra": {
         "shopware-plugin-class": "SteamPixelSepa\\Sepa\\Sepa",
         "copyright": "SteamPixel",
+        "plugin-icon": "icon.png",
         "label": {
             "de-DE": "SEPA Lastschrift Daten",
             "en-GB": "Collect SEPA data"
