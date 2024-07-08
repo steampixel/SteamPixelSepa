@@ -28,3 +28,7 @@ This plugin provides a simple way to collect SEPA payment information. It will i
 ## Warning and Disclaimer
 SEPA information is extremely sensitive data. It is your responsibility to ensure that the software and hardware used (server, operating system, shop software, etc...) meets the latest applicable security requirements. The SEPA data is stored unencrypted inside your database. You should delete this data regularly. The manufacturer of the plugin is not responsible for damage (e.g. data theft) caused by exploiting security vulnerabilities of the shop, the server, the operating system or inside this plugin.
 
+
+## contributers 
+
+* [Akshay Nikhare](https://github.com/akshaynikhare)
