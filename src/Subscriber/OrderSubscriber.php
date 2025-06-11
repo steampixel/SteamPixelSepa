@@ -36,8 +36,6 @@ class OrderSubscriber implements EventSubscriberInterface
 
     public function addCustomFieldsToConvertedCart(CartConvertedEvent $event)
     {
-
-      // Get post data
       $sepa_store = (isset($_POST['sepa_store'])?$_POST['sepa_store']:false);
       $sepa_owner = (isset($_POST['sepa_owner'])?$_POST['sepa_owner']:false);
       $sepa_iban = (isset($_POST['sepa_iban'])?$_POST['sepa_iban']:false);
@@ -46,7 +44,6 @@ class OrderSubscriber implements EventSubscriberInterface
 
       if($sepa_store !== false) {
 
-        // Store SEPA data to order
         $cart = $event->getConvertedCart();
         $cart['customFields']['custom_order_sepa_owner'] = $sepa_owner;
         $cart['customFields']['custom_order_sepa_iban'] = $sepa_iban;
@@ -54,10 +51,9 @@ class OrderSubscriber implements EventSubscriberInterface
         $cart['customFields']['custom_order_sepa_already'] = $sepa_already;
         $event->setConvertedCart($cart);
 
-        // Store SEPA data to customer account
         $this->customerRepository->upsert([
             [
-                'id' => $cart['orderCustomer']['customerId'],
+                'id' => $cart['orderCustomer']['customer']['id'],
                 'customFields' => [
                   'custom_customer_sepa_owner' => $sepa_owner,
                   'custom_customer_sepa_iban' => $sepa_iban,
