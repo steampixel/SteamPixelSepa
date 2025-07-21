@@ -1,3 +1,13 @@
+⚠️ Notice: This plugin is no longer maintained
+
+Due to lack of time, I am no longer maintaining this Shopware 6 plugin.
+I will not be reviewing issues or accepting pull requests.
+
+Feel free to fork the project and continue development if you find it useful.
+If you'd like me to add a link to your fork here, feel free to contact me.
+
+Thanks for your understanding!
+
 # SEPA Plugin for Shopware 6
 This plugin provides a simple way to collect SEPA payment information. It will inject SEPA form fields into the chekout process and into the customer backend section. It will store the SEPA information to each order and will also store the information directly to the customer account. The user can change the information inside the user section. This plugin comes with the AGPLv3 license.
 
