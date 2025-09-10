@@ -57,7 +57,7 @@ class OrderSubscriber implements EventSubscriberInterface
         // Store SEPA data to customer account
         $this->customerRepository->upsert([
             [
-                'id' => $cart['orderCustomer']['customerId'],
+                'id' => $cart['orderCustomer']['customer']['id'],
                 'customFields' => [
                   'custom_customer_sepa_owner' => $sepa_owner,
                   'custom_customer_sepa_iban' => $sepa_iban,

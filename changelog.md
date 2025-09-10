@@ -1,5 +1,7 @@
 # Changelog
 
+# 1.0.4
+- Compatibility update for SW 6.7.1.2
 
 # 1.0.1
 

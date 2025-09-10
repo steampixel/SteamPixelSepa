@@ -13,21 +13,17 @@ namespace SteamPixelSepa\Sepa\Storefront\Controller;
 use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 
-use Shopware\Core\Checkout\Cart\Exception\CustomerNotLoggedInException;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
-use Shopware\Core\Checkout\Customer\SalesChannel\AbstractChangePaymentMethodRoute;
-use Shopware\Core\Checkout\Payment\Exception\UnknownPaymentMethodException;
 use Shopware\Core\Checkout\Payment\PaymentException;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Exception\InvalidUuidException;
 use Shopware\Core\Framework\Validation\DataBag\RequestDataBag;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoadedHook;
-use Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoader;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Shopware\Core\Checkout\Customer\CustomerException;
+use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 
 
 #[Route(defaults: ['_routeScope' => ['storefront']])]
@@ -37,8 +33,7 @@ class AccountPaymentController extends StorefrontController
 
     public function __construct(
         private readonly EntityRepository $customerRepository,
-        private readonly AccountPaymentMethodPageLoader $paymentMethodPageLoader,
-        private readonly AbstractChangePaymentMethodRoute $changePaymentMethodRoute
+        private readonly EntityRepository $paymentMethodRepository,
     ) {
     }
 
@@ -50,12 +45,14 @@ class AccountPaymentController extends StorefrontController
         try {
             $paymentMethodId = $requestDataBag->getAlnum('paymentMethodId');
 
-            $this->changePaymentMethodRoute->change(
-                $paymentMethodId,
-                $requestDataBag,
-                $context,
-                $customer
-            );
+            $this->validatePaymentMethodId($paymentMethodId, $context->getContext());
+
+            $this->customerRepository->update([
+                [
+                    'id' => $customer->getId(),
+                    'defaultPaymentMethodId' => $paymentMethodId,
+                ],
+            ], $context->getContext());
         } catch (InvalidUuidException|PaymentException $exception) {
             $this->addFlash(self::DANGER, $this->trans('error.' . $exception->getErrorCode()));
 
@@ -91,5 +88,22 @@ class AccountPaymentController extends StorefrontController
         }
 
         return new RedirectResponse($this->generateUrl('frontend.account.payment.page'));
+    }
+    
+    /**
+     * @throws InvalidUuidException
+     */
+    private function validatePaymentMethodId(string $paymentMethodId, Context $context): void
+    {
+        if (!Uuid::isValid($paymentMethodId)) {
+            throw new InvalidUuidException($paymentMethodId);
+        }
+
+        /** @var PaymentMethodEntity|null $paymentMethod */
+        $paymentMethod = $this->paymentMethodRepository->search(new Criteria([$paymentMethodId]), $context)->get($paymentMethodId);
+
+        if (!$paymentMethod) {
+            throw CustomerException::unknownPaymentMethod($paymentMethodId);
+        }
     }
 }

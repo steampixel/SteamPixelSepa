@@ -18,8 +18,7 @@
 
       <service id="SteamPixelSepa\Sepa\Storefront\Controller\AccountPaymentController" public="true">
             <argument type="service" id="customer.repository"/>
-            <argument type="service" id="Shopware\Storefront\Page\Account\PaymentMethod\AccountPaymentMethodPageLoader"/>
-            <argument type="service" id="Shopware\Core\Checkout\Customer\SalesChannel\ChangePaymentMethodRoute"/>
+            <argument type="service" id="payment_method.repository"/>
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
